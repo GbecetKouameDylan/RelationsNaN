@@ -42,7 +42,7 @@ namespace RelationsNaN.Data
                 await _context.SaveChangesAsync();
             }
 
-            if (_context.Platform.Count() == 0)
+            if (_context.Platform.Count() == null)
             {
                 Platform ps5 = new Platform()
                 {

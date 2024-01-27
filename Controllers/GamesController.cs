@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RelationsNaN.Data;
+using RelationsNaN.Migrations;
 using RelationsNaN.Models;
 
 namespace RelationsNaN.Controllers
@@ -49,6 +50,7 @@ namespace RelationsNaN.Controllers
         public IActionResult Create()
         {
             ViewData["GenreId"] = new SelectList(_context.Bundle, "Id", "Name");
+            ViewData["Platforms"] = new SelectList(_context.Platform,"Id", "Name");
             return View();
         }
 
@@ -65,23 +67,11 @@ namespace RelationsNaN.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GenreId"] = new SelectList(_context.Bundle, "Id", "Name", game.GenreId);
+            ViewData["GenreId"] = new SelectList(_context.Bundle, "Id", "Name");
+            ViewData["Platforms"] = new SelectList(_context.Platform, "Id", "Name");
             return View(game);
         }
-        [HttpPost]
-        public async Task<IActionResult> AddPlatform(Platform plat)
-        {
-            
-            
-            if (ModelState.IsValid)
-            {
-                _context.Add(plat);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-
-            return RedirectToAction(nameof(Index));
-        }
+       
 
         // GET: Games/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -96,8 +86,8 @@ namespace RelationsNaN.Controllers
             {
                 return NotFound();
             }
-            ViewData["GenreId"] = new SelectList(_context.Bundle, "Id", "Name", game.GenreId);
-            ViewData["Platforms"] = new SelectList(_context.Platform, "Id", "Name", game.GenreId);
+            ViewData["GenreId"] = new SelectList(_context.Bundle, "Id", "Name");
+            ViewData["Platforms"] = new SelectList(_context.Platform, "Id", "Name");
             return View(game);
         }
 
@@ -133,7 +123,8 @@ namespace RelationsNaN.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GenreId"] = new SelectList(_context.Bundle, "Id", "Name", game.GenreId);
+            ViewData["GenreId"] = new SelectList(_context.Bundle, "Id", "Name");
+            ViewData["Platforms"] = new SelectList(_context.Platform, "Id", "Name");
             return View(game);
         }
 
@@ -181,21 +172,38 @@ namespace RelationsNaN.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RemovePlatform(int platid)
+        public async Task<IActionResult> RemovePlatform(int platormId, int id)
         {
-            if (_context.Platform == null)
-            {
-                return Problem("Entity set 'RelationsNaNContext.Plateform'  is null.");
-            }
-            var Plat = await _context.Platform.FindAsync(platid);
             
-            if (Plat != null)
-            {
-                _context.Platform.Remove(Plat);
-            }
+
+            var Plateform = await _context.Platform.FindAsync(platormId);
+            var Model = await _context.Game.FindAsync(id);
+
+                Model.Platforms.Remove(Plateform);
+            
+
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        
+        [HttpPost]
+        public async Task<IActionResult> AddPlatform(int id, int platformId)
+        {
+          
+            var Plateform = await _context.Platform.FindAsync(platformId);
+            var Model = await _context.Game.FindAsync(id);
+            
+            if (Model.Platforms == null)
+            {               
+                Model.Platforms = new List<Platform>();               
+            }
+            Model.Platforms.Add(Plateform);
+
+            await _context.SaveChangesAsync();
+            
+            return RedirectToAction(nameof(Index));
+
+
+        }
     }
 }

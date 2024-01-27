@@ -24,7 +24,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Genre)
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Platforms)
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -40,9 +42,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.ReleaseYear)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Genre.Id)
-            </td>
+           
                 <td>
                     @if (item.Genre != null)
                     {
