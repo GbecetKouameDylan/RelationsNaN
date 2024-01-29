@@ -88,6 +88,9 @@ namespace RelationsNaN.Controllers
             {
                 return NotFound();
             }
+
+            var games = await _context.Game.Include(p => p.Platforms).Where(x => x.Id == game.Id).ToListAsync();
+
             ViewData["GenreId"] = new SelectList(_context.Bundle, "Id", "Name");
             ViewData["Platforms"] = new SelectList(_context.Platform, "Id", "Name");
             return View(game);
