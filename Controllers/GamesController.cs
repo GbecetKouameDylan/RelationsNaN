@@ -23,7 +23,9 @@ namespace RelationsNaN.Controllers
         // GET: Games
         public async Task<IActionResult> Index()
         {
-            var relationsNaNContext = _context.Game.Include(g => g.Genre);
+            var relationsNaNContext = _context.Game.Include(g => g.Genre).Include(p => p.Platforms);
+             
+          
             return View(await relationsNaNContext.ToListAsync());
         }
 
@@ -192,11 +194,12 @@ namespace RelationsNaN.Controllers
           
             var Plateform = await _context.Platform.FindAsync(platformId);
             var Model = await _context.Game.FindAsync(id);
-            
-            if (Model.Platforms == null)
-            {               
-                Model.Platforms = new List<Platform>();               
+
+            if(Model.Platforms == null)
+        {
+                Model.Platforms = new List<Platform>();
             }
+
             Model.Platforms.Add(Plateform);
 
             await _context.SaveChangesAsync();

@@ -14,6 +14,7 @@
         {
             Model.Platforms = new List<Platform>();
         }
+
         @foreach (var platform in Model.Platforms)
         {
             <form asp-action="RemovePlatform" method="post">

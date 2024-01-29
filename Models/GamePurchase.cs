@@ -2,12 +2,12 @@
 
 namespace RelationsNaN.Models
 {
-    public class Platform
+    public class GamePurchase
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-
         [ValidateNever]
-        public List<Game> Games { get; set; } 
+        public Game Game { get; set; }
+        [ValidateNever]
+        public Purchase Purchase { get; set; }
     }
 }
